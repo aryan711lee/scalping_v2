@@ -1,0 +1,12 @@
+fyers-apiv3
+pandas
+numpy
+sqlalchemy
+python-dotenv
+pyarrow
+fastparquet
+requests
+pytz
+pytest
+pytest-cov
+jupyter
