@@ -1,0 +1,199 @@
+{
+  "created_at": "2026-08-20T15:55:20.105282+00:00",
+  "primary_timeframe": "3min",
+  "primary_variant": "L1",
+  "symbols": [
+    "NSE:RELIANCE-EQ",
+    "NSE:TCS-EQ",
+    "NSE:INFY-EQ",
+    "NSE:HDFCBANK-EQ",
+    "NSE:ICICIBANK-EQ",
+    "NSE:SBIN-EQ",
+    "NSE:WIPRO-EQ",
+    "NSE:LT-EQ",
+    "NSE:KOTAKBANK-EQ",
+    "NSE:AXISBANK-EQ",
+    "NSE:BAJFINANCE-EQ",
+    "NSE:MARUTI-EQ",
+    "NSE:ASIANPAINT-EQ",
+    "NSE:TITAN-EQ",
+    "NSE:SUNPHARMA-EQ"
+  ],
+  "feature_columns": [
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+    "price_return_1",
+    "price_return_3",
+    "price_return_5",
+    "price_return_10",
+    "candle_body",
+    "candle_body_abs",
+    "upper_wick",
+    "lower_wick",
+    "candle_range",
+    "close_position",
+    "ema9_distance",
+    "ema21_distance",
+    "ema50_distance",
+    "ema9_above_ema21",
+    "ema21_above_ema50",
+    "vwap_distance",
+    "vwap_above",
+    "rsi_14",
+    "rsi_slope",
+    "roc_5",
+    "roc_10",
+    "true_range",
+    "atr_14",
+    "atr_pct",
+    "bb_width",
+    "bb_position",
+    "realized_vol_10",
+    "realized_vol_20",
+    "volume_ma_20",
+    "volume_ratio",
+    "volume_return_1",
+    "volume_above_avg",
+    "obv",
+    "obv_slope",
+    "session_minute",
+    "time_sin",
+    "time_cos",
+    "is_opening_30min",
+    "is_closing_30min",
+    "day_sin",
+    "day_cos",
+    "nifty_return_1",
+    "nifty_return_3",
+    "nifty_return_5",
+    "nifty_rsi",
+    "nifty_trend",
+    "trend_strength",
+    "trend_regime",
+    "trend_regime_enc",
+    "atr_percentile",
+    "vol_regime",
+    "vol_regime_enc"
+  ],
+  "dropped_features": [
+    "ema_9",
+    "ema_21",
+    "ema_50",
+    "bb_upper",
+    "bb_lower",
+    "vwap"
+  ],
+  "folds": [
+    {
+      "fold_id": 1,
+      "train_start": "2023-01-02",
+      "train_end": "2024-06-30",
+      "validate_start": "2024-07-01",
+      "validate_end": "2024-12-31",
+      "train_rows": 603870,
+      "validate_rows": 206250,
+      "train_class_dist": {
+        "-1": 0.1696,
+        "0": 0.6705,
+        "1": 0.1599
+      },
+      "validate_class_dist": {
+        "-1": 0.1927,
+        "0": 0.6265,
+        "1": 0.1808
+      },
+      "class_weights": {
+        "-1": 1.966,
+        "0": 0.4971,
+        "1": 2.0843
+      }
+    },
+    {
+      "fold_id": 2,
+      "train_start": "2023-01-02",
+      "train_end": "2024-12-31",
+      "validate_start": "2025-01-01",
+      "validate_end": "2025-06-30",
+      "train_rows": 810120,
+      "validate_rows": 202950,
+      "train_class_dist": {
+        "-1": 0.1754,
+        "0": 0.6593,
+        "1": 0.1652
+      },
+      "validate_class_dist": {
+        "-1": 0.1908,
+        "0": 0.619,
+        "1": 0.1902
+      },
+      "class_weights": {
+        "-1": 1.8999,
+        "0": 0.5056,
+        "1": 2.0173
+      }
+    },
+    {
+      "fold_id": 3,
+      "train_start": "2023-01-02",
+      "train_end": "2025-06-30",
+      "validate_start": "2025-07-01",
+      "validate_end": "2025-12-31",
+      "train_rows": 1013070,
+      "validate_rows": 206565,
+      "train_class_dist": {
+        "-1": 0.1785,
+        "0": 0.6512,
+        "1": 0.1702
+      },
+      "validate_class_dist": {
+        "-1": 0.1315,
+        "0": 0.7363,
+        "1": 0.1322
+      },
+      "class_weights": {
+        "-1": 1.8672,
+        "0": 0.5118,
+        "1": 1.958
+      }
+    }
+  ],
+  "test": {
+    "test_start": "2026-01-01",
+    "test_end": "2026-08-19",
+    "test_rows": 256960,
+    "test_class_dist": {
+      "-1": 0.2093,
+      "0": 0.5996,
+      "1": 0.1911
+    }
+  },
+  "baseline_fold_results": [
+    {
+      "fold_id": 1,
+      "combined_precision": 0.18073918269230768,
+      "signal_rate": 0.0645430303030303,
+      "long_precision": 0.17705977382875607,
+      "short_precision": 0.18393709632125807,
+      "macro_f1": 0.28432783668193123
+    },
+    {
+      "fold_id": 2,
+      "combined_precision": 0.16692772432311478,
+      "signal_rate": 0.06606060606060606,
+      "long_precision": 0.1646276997432412,
+      "short_precision": 0.16917182434423814,
+      "macro_f1": 0.2793041348994069
+    },
+    {
+      "fold_id": 3,
+      "combined_precision": 0.12123714435853164,
+      "signal_rate": 0.06448817563478808,
+      "long_precision": 0.13089964869405835,
+      "short_precision": 0.11189843519338648,
+      "macro_f1": 0.3057841156096105
+    }
+  ]
+}

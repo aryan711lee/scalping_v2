@@ -1,0 +1,44 @@
+DATA VALIDATION REPORT
+================================================================================
+
+Symbol:             NSE:KOTAKBANK-EQ
+Timeframe:          1min
+Actual candles:     335,893
+Expected candles:   336,750
+Completeness:       99.75%
+Date range:         2023-01-02 09:15:00+05:30 – 2026-08-19 15:29:00+05:30
+Gaps detected:      2
+Zero-volume candles:172
+OHLC anomalies:     0
+Volume (min/max/mean): 0 / 55647030 / 58311.1
+Price range (close): 308.94 – 460.24
+Flagged:            no
+Critical:           no
+
+Symbol:             NSE:KOTAKBANK-EQ
+Timeframe:          3min
+Actual candles:     111,964
+Expected candles:   112,250
+Completeness:       99.75%
+Date range:         2023-01-02 09:15:00+05:30 – 2026-08-19 15:27:00+05:30
+Gaps detected:      2
+Zero-volume candles:42
+OHLC anomalies:     0
+Volume (min/max/mean): 0 / 56937390 / 174930.2
+Price range (close): 308.99 – 460.08
+Flagged:            no
+Critical:           no
+
+Symbol:             NSE:KOTAKBANK-EQ
+Timeframe:          5min
+Actual candles:     67,179
+Expected candles:   67,350
+Completeness:       99.75%
+Date range:         2023-01-02 09:15:00+05:30 – 2026-08-19 15:25:00+05:30
+Gaps detected:      2
+Zero-volume candles:16
+OHLC anomalies:     0
+Volume (min/max/mean): 0 / 80395435 / 291556.8
+Price range (close): 309.05 – 460.00
+Flagged:            no
+Critical:           no

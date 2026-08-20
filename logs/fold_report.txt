@@ -1,0 +1,49 @@
+PHASE 5 — WALK-FORWARD FOLD REPORT
+Generated: 2026-08-20T15:55:20.088527+00:00
+Timeframe: 3min  |  Variant: L1
+
+Fold 1: Train 2023-01-02→2024-06-30 (17m) | Val 2024-07-01→2024-12-31 (5m)
+Fold 2: Train 2023-01-02→2024-12-31 (23m) | Val 2025-01-01→2025-06-30 (5m)
+Fold 3: Train 2023-01-02→2025-06-30 (29m) | Val 2025-07-01→2025-12-31 (5m)
+Test:   2026-01-01→2026-08-19 (7m) [HOLDOUT — do not touch until Phase 6 final eval]
+
+FOLD SUMMARY TABLE
+Fold    Train Period                  Train Rows  Val Period                     Val Rows   Long%   Short%    None%
+-------------------------------------------------------------------------------------------------------------------
+1       2023-01-02 → 2024-06-30          603,870  2024-07-01 → 2024-12-31         206,250    18.1%     19.3%     62.6%
+2       2023-01-02 → 2024-12-31          810,120  2025-01-01 → 2025-06-30         202,950    19.0%     19.1%     61.9%
+3       2023-01-02 → 2025-06-30        1,013,070  2025-07-01 → 2025-12-31         206,565    13.2%     13.2%     73.6%
+TEST    [HOLDOUT]                              —  2026-01-01 → 2026-08-19         256,960    19.1%     20.9%     60.0%
+
+============================================================
+MODEL EVALUATION REPORT
+Model: Baseline_EXP001 | Variant: L1 | Timeframe: 3min
+============================================================
+
+FOLD-BY-FOLD RESULTS
+                         Fold 1      Fold 2      Fold 3              Mean ± Std
+combined_precision             18.1%        16.7%        12.1%      15.6% ± 2.5%
+long_precision                 17.7%        16.5%        13.1%      15.8% ± 2.0%
+short_precision                18.4%        16.9%        11.2%      15.5% ± 3.1%
+signal_rate                     6.5%         6.6%         6.4%       6.5% ± 0.1%
+macro_f1                       0.2843      0.2793      0.3058  0.2898 ± 0.0115
+
+AGGREGATE SUMMARY
+  combined_precision:     15.6% ± 2.5%   [target: >40%]
+  signal_rate:             6.5% ± 0.1%   [lower = fewer, costlier trades]
+  estimated trades/day:    ~7.2          [per symbol]
+  consistency (std/mean):  16.3%           [<10% is acceptable]
+
+CONFUSION MATRIX (Fold 2 — representative)
+                 Pred -1    Pred 0   Pred +1
+  True -1:         1,148    36,588       986
+  True  0:         4,586   116,495     4,545
+  True +1:         1,052    36,460     1,090
+
+BASELINE COMPARISON (EXP_001)
+  EXP_001 signal rate:       ~100% (fires on all rule-matching candles)
+  EXP_001 win rate:           16.5%
+  This model signal rate:      6.5%
+  This model combined prec:   15.6%
+  Verdict: NOT AN IMPROVEMENT
+============================================================

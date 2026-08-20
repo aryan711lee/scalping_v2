@@ -1,0 +1,39 @@
+================================================================
+BACKTEST REPORT — Baseline Strategy (Model Zero)
+Symbols: 15 | Timeframe: 3min | Period: 2023-01-02 to 2026-08-19
+Capital: Rs.50,000 | Leverage: 5x | Sizing: fixed_pct 20%
+================================================================
+
+SUMMARY
+  Total trades:          2,239
+  Win rate:              16.5%
+  Net P&L:               Rs.-170,125.29
+  Net return:            -340.3%
+  Max drawdown:          -99.7%
+  Sharpe ratio:          -19.34
+  Profit factor:         0.07
+  Expectancy per trade:  Rs.-75.98
+
+COSTS SUMMARY
+  Total gross P&L:       Rs.8,811.26
+  Total costs paid:      Rs.178,936.56
+  Costs as % of gross:   2030.8%
+
+EXIT BREAKDOWN
+  Target                682  (30.5%)
+  Stoploss            1,279  (57.1%)
+  Time Exit             278  (12.4%)
+  End Of Data             0  (0.0%)
+
+REGIME BREAKDOWN (by direction)
+  long      trades: 1,030  win rate: 13.4%
+  short     trades: 1,209  win rate: 19.1%
+
+TIME OF DAY BREAKDOWN
+  Morning  (09:15–10:59)  trades:   400  win rate: 19.5%
+  Midday   (11:00–13:29)  trades: 1,226  win rate: 19.3%
+  Afternoon(13:30–15:29)  trades:   613  win rate: 8.8%
+
+  Max drawdown duration: 2235 trades
+  Calmar ratio:          -11.62
+================================================================
