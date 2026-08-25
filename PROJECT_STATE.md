@@ -1,10 +1,10 @@
 # PROJECT STATE
 
 ## Current Phase
-Phase 6: ML Model Training Pipeline — Implementation Complete (models training pending)
+Phase 7: Paper Trading — **Not Started**
 
 ## Status
-Phase 6 code implemented. Ready to run training: `python scripts/train_models.py`
+Phase 6.5 and EXP_015 complete. EXP_015 (L5 2%/1% labels) confirmed Scenario D: label density too low for ML training on 3-min candles. 263 tests passing (0 failures). Phase 7 proceeds with EXP_014 configuration (L1 XGBoost + confidence filter). See EXP_015 decision below.
 
 ## Architecture
 - Broker: Fyers (primary)
@@ -68,6 +68,12 @@ Phase 6 code implemented. Ready to run training: `python scripts/train_models.py
 - [x] 43 new tests passing (203 total, 0 failures)
 - [x] PROJECT_STATE.md updated
 
+### EXP_015 — L5 Labels (Between Phase 6.5 and Phase 7)
+- [x] labels/variants.py — L5 variant added (target=2.00%, stop=1.00%, horizon=60)
+- [x] 45 L5 label files built (15 symbols × 3 timeframes) — all flagged for low density
+- [x] L5 distribution documented: 3min avg long~1.0%, short~0.7% — below 3% threshold
+- [x] Decision: Scenario D confirmed, no retraining, Phase 7 uses EXP_014 configuration
+
 ### Phase 4 — Label Engineering & Research Environment
 - [x] labels/variants.py — L1, L2, L3, L4 variant definitions
 - [x] labels/constructor.py — bar-by-bar three-class labeling (all 5 critical rules enforced)
@@ -92,7 +98,13 @@ EXP_001 results (honest):
 - 2,239 trades | Win rate: 16.5% | Net P&L: Rs.-170,125 (-340.3%)
 - Gross P&L barely positive (Rs.8,811); costs paid Rs.178,936 (2031% of gross)
 - Expectancy per trade: Rs.-75.98
-- This is the floor Phase 6 ML must beat
+
+Phase 6 ML (EXP_008b, selected final configuration):
+- Best model: XGBoost L1, threshold=0.5, 55 features
+- 1,906 trades | Win rate: 18.5% | Net P&L: Rs.-133,145 (-266.3%)
+- Expectancy per trade: Rs.-69.86 (+Rs.6.12/trade vs baseline)
+- Still loss-making: ML improves selectivity but cannot overcome structural cost problem
+- Primary finding: model learned "when NOT to trade" (time-of-day dominates) rather than direction
 
 EXP_002 results — label distribution (3min, avg 15 symbols):
 - L1: +1=17.1% | -1=18.0% | 0=64.9% (recommended for Phase 6)
@@ -123,20 +135,123 @@ EXP_002 results — label distribution (3min, avg 15 symbols):
 - Simple rolling mean for RSI: gives systematically wrong values
 - Checking exits on same candle as entry fill (would cause unrealistic immediate stops)
 
+### Phase 6.5 — Signal Quality Improvement (Infrastructure)
+- [x] features/momentum_quality.py — candle_consistency_3, volume_price_trend, ema9_slope
+- [x] features/multi_timeframe.py — add_5min_context with direction='backward' + 5min timestamp shift
+- [x] features/pipeline.py — updated: add_momentum_quality + optional df_5min → add_5min_context
+- [x] scripts/build_features.py — updated: builds 5min→3min→1min order, caches 5min for 3min pass
+- [x] scripts/train_models.py — updated: --variant (L1/L2/L3/L4) and --symbols args added
+- [x] models/confidence_filter.py — ConfidenceFilter with top_pct/window_candles/min_confidence
+- [x] scripts/analyse_per_symbol.py — EXP_010 per-symbol breakdown from trade log CSV
+- [x] scripts/run_confidence_sweep.py — EXP_013 hyperparameter sweep
+- [x] scripts/run_exp014_backtest.py — EXP_014 best combination backtest
+- [x] tests/test_momentum_quality.py — 11 tests
+- [x] tests/test_multi_timeframe.py — 9 tests (including look-ahead alignment + tz-aware datetime regression test)
+- [x] tests/test_confidence_filter.py — 8 tests
+- [x] models/confidence_filter.py — vectorized predict() via pandas rolling quantile (O(n) vs O(n×window))
+- [x] 263 total tests passing (235 Phase 1-6 + 28 Phase 6.5), 0 failures
+
 ### Phase 6 — ML Model Training Pipeline
 - [x] models/trainer.py — ModelTrainer with fold/final training, XGBoost label encoding, StandardScaler on train only
 - [x] models/predictor.py — ModelPredictor with threshold-based signal selectivity, proba output [short/none/long]
 - [x] models/selector.py — ModelSelector with composite score (precision - instability penalty - signal_rate penalty)
-- [x] models/artifacts/ — artifact directory created
+- [x] models/artifacts/ — xgboost_L1_final.joblib + best_model_meta.json saved
 - [x] strategy/ml_strategy.py — MLStrategy wrapping predictor, afternoon filter, BaseStrategy compatible
-- [x] scripts/train_models.py — EXP_004→007: LR, RF, XGBoost, threshold tuning; saves best model metadata
-- [x] scripts/run_ml_backtest.py — EXP_008: loads test holdout ONLY here, vs EXP_001 comparison table
-- [x] tests/test_trainer.py, test_predictor.py, test_selector.py, test_ml_strategy.py — 28 pass, 4 skip (xgb)
-- [x] 231 total tests passing (203 Phase 1-5 + 28 Phase 6), 0 failures
+- [x] scripts/train_models.py — EXP_004→007: LR, RF, XGBoost, threshold tuning; best model metadata saved
+- [x] scripts/run_ml_backtest.py — EXP_008a (avoid_afternoon=True) and EXP_008b (avoid_afternoon=False) vs EXP_001
+- [x] scripts/smoke_test_training.py — one symbol, one fold, 10k rows (pipeline validation)
+- [x] tests/test_trainer.py, test_predictor.py, test_selector.py, test_ml_strategy.py — 32 tests, all passing
+- [x] research/notebooks/04_model_results.ipynb — fold comparisons, threshold sweep, EXP_008 results, written conclusion
+- [x] 235 total tests passing (203 Phase 1-5 + 32 Phase 6), 0 failures
+
+## EXP_015 Finding (2026-08-23)
+
+**Scenario D (label density) + Backtest run with L1 model + L5 exits.**
+
+L5 labels: 0.5–1.6% signal density per direction on 3-min candles — below 3% threshold. L5 ML model not trained.
+
+Backtest run using EXP_014 L1 model with L5 exit params (2%/1%) to quantify the cost-structure improvement empirically.
+
+**EXP_015 backtest results (2026 holdout, L1 signals + L5 exits):**
+- Win rate: **38.1%** (vs break-even ~38.5% — gap of only 0.4pp)
+- Costs/gross: **200%** (vs 1712% with L1 exits — structural improvement confirmed)
+- Net P&L: **Rs.-67,964** (vs -123,005 EXP_014, +Rs.55,041)
+- Gross P&L: **Rs.67,777** (vs Rs.7,629 — 9× improvement)
+- Trades: 1,297 | Max drawdown: -39.6% (vs -99.7%)
+
+**Key finding:** The L1 signal selector captures 2% moves when given 60 candles instead of 20. Win rate jumps from 16.3% → 38.1% purely from changing exit parameters. The break-even gap is now 0.4pp, not 30pp.
+
+**L5 label distribution (3min avg, 15 symbols):** long ~1.0%, short ~0.7%, none ~98.4%
+
+**Revised Phase 7 decision:** Test L5 exit parameters (2%/1%) in paper trading with the L1 model, NOT L1 exits. The L5 exits nearly break even on the 2026 holdout; L1 exits lose at 1712% costs/gross. See EXPERIMENT_LOG.md for full analysis.
 
 ## Next Task
-Run model training: `python scripts/train_models.py`
-Then backtest: `python scripts/run_ml_backtest.py`
+Phase 7: Paper Trading
+
+Phase 7 goal: run both configurations live on Fyers paper account and validate:
+1. Execution fills match backtester T+1 open assumption
+2. Real slippage vs assumed (0.05% per side)
+3. Whether the 38.1% L5 win rate holds on live data (key question from EXP_015)
+
+**Primary config (EXP_015 finding):** XGBoost L1 + confidence filter + L5 exits (target=2.00%, stop=1.00%)
+**Reference config (EXP_014):** XGBoost L1 + confidence filter + L1 exits (target=0.40%, stop=0.20%)
+
+Final model artifact: `models/artifacts/xgboost_L1_final.joblib`
+Confidence filter config: `models/artifacts/confidence_filter_meta.json`
+
+## Phase 6.5 Key Findings
+
+### Experiment results (EXP_009–EXP_014, walk-forward 3 folds, L1 unless noted)
+| Exp | Description | combined_precision | signal_rate | consistency | Verdict |
+|-----|-------------|-------------------|-------------|-------------|---------|
+| EXP_009 | L4 labels (wider target/stop) | 24.0% ± 3.1% | 7.3% | 12.8% | Worse than L1 — reject |
+| EXP_010 | 5-symbol focused universe | 23.5% ± 5.1% | 11.0% | 21.9% | Worse on all dimensions — reject |
+| EXP_011 | +3 momentum_quality features | 27.0% ± 3.7% | 4.1% | 13.5% | Neutral (within error of baseline) |
+| EXP_012 | +5 multi-timeframe 5-min features | 27.4% ± 2.6% | 4.0% | 9.6% | **Best: consistency 13.3%→9.6%** |
+| EXP_013 | Confidence filter sweep (45 combos) | 27.3% ± — | 3.2% | — | Best config: top_pct=0.20, wc=50, mc=0.35 |
+| EXP_014 | Final backtest on 2026 holdout | 16.3% win rate | — | — | Rs.-123,005, costs 1712% of gross |
+
+### EXP_014 vs predecessors (2026 holdout)
+| Metric | EXP_001 (baseline) | EXP_008b (Phase 6) | EXP_014 (Phase 6.5) |
+|--------|-------------------|-------------------|---------------------|
+| Trades | 2,239 | 1,906 | 1,730 |
+| Win rate | 16.5% | 18.5% | 16.3% |
+| Net P&L | Rs.-170,125 | Rs.-133,145 | Rs.-123,005 |
+| Expectancy | Rs.-75.98 | Rs.-69.86 | Rs.-71.10 |
+| Costs/gross | 2031% | 1208% | 1712% |
+
+### Root cause (unchanged from Phase 6)
+NSE intraday cost structure is a structural barrier at Rs.50,000 capital. Break-even win rate ~37%; achieved ~16-18%. Phase 6.5 exhausted feature engineering and signal filtering levers. The model is technically sound; economics are unviable at this capital level.
+
+### Critical bug fixed in Phase 6.5
+`datetime64[ms] + pd.Timedelta(minutes=5)` upcasts to `datetime64[us]` in pandas 3.x, causing `merge_asof` "incompatible merge keys" error for 11/15 symbols during EXP_012 feature rebuild. Fix: save and restore the original dtype; add fallback dtype normalization between left/right DataFrames. Regression test added: `test_tz_aware_datetimes_compatible()`.
+
+## Phase 6 Key Findings
+
+### Model comparison (walk-forward, 3 folds, L1, 3min, 55 features)
+| Model | combined_precision | signal_rate | consistency (std/mean) | viable |
+|-------|-------------------|-------------|------------------------|--------|
+| Logistic Regression | 34.6% ± 2.4% | 0.1% | 6.8% | No (no signals) |
+| Random Forest | 34.7% ± 4.4% | 0.0% | 12.7% | No (zero signals) |
+| XGBoost (t=0.50) | 27.3% ± 3.6% | 4.1% | 13.3% | Yes (selected) |
+
+### Test holdout results (2026-01-01 → 2026-08-19, 15 symbols)
+- **EXP_008a** (avoid_afternoon=True): 1,894 trades, 18.5% win rate, Rs.-133,932 net P&L, Rs.-70.71/trade
+- **EXP_008b** (avoid_afternoon=False): 1,906 trades, 18.5% win rate, Rs.-133,145 net P&L, Rs.-69.86/trade
+- **Selected**: EXP_008b (marginally better; afternoon filter not beneficial under ML)
+- **vs EXP_001 baseline**: +Rs.36,980 net P&L improvement (+Rs.6.12/trade expectancy)
+
+### Why ML could not reach 40% precision target
+- Dominant features: session_minute (24%), is_closing_30min (22%) — time-of-day, not price/momentum
+- Model learned "when NOT to trade" rather than directional signals
+- Cost structure unchanged: costs = 1,208% of gross profit even with ML filtering
+- Baseline strategy (EMA/RSI/VWAP) has poor directional power — ML filter helps, cannot cure
+
+### Critical bugs fixed during Phase 6 implementation
+- sklearn 1.9.0: removed `multi_class` parameter from LogisticRegression
+- pandas 3+: `StringDtype` not `object` — fixed feature column filter with `is_numeric_dtype()`
+- XGBoost early stopping: mlogloss plateau ≠ precision plateau (fold 1/2 showed 0% precision); removed `early_stopping_rounds` entirely
+- `train_final` crash: retained `early_stopping_rounds` attribute without eval_set; fixed with explicit None reset
 
 ## Phase 5 Key Findings (bring to review conversation)
 

@@ -49,9 +49,9 @@ FOLDS     = [1, 2, 3]
 THRESHOLDS = [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70]
 
 
-def load_dataset(splitter: DatasetSplitter):
-    logger.info("Loading full dataset (15 symbols, 3min, L1)...")
-    df = build_full_dataset(WATCHLIST, TIMEFRAME, VARIANT)
+def load_dataset(splitter: DatasetSplitter, symbols: list, variant: str):
+    logger.info("Loading full dataset (%d symbols, 3min, %s)...", len(symbols), variant)
+    df = build_full_dataset(symbols, TIMEFRAME, variant)
     logger.info("  Total rows: %d", len(df))
     feature_cols = splitter.get_feature_columns(df)
     logger.info("  Feature columns: %d", len(feature_cols))
@@ -60,7 +60,7 @@ def load_dataset(splitter: DatasetSplitter):
 
 def train_and_evaluate(model, model_name: str, df: pd.DataFrame,
                        feature_cols: list, splitter: DatasetSplitter,
-                       exp_id: str) -> dict:
+                       exp_id: str, variant: str = VARIANT) -> dict:
     """
     Train model through all folds, evaluate on val sets.
     Returns experiment dict with fold_results, agg, and final model path.
@@ -77,7 +77,7 @@ def train_and_evaluate(model, model_name: str, df: pd.DataFrame,
     trainer = ModelTrainer(
         model=model,
         model_name=model_name,
-        variant=VARIANT,
+        variant=variant,
         feature_columns=feature_cols,
         class_weights=class_weights,
     )
@@ -101,7 +101,7 @@ def train_and_evaluate(model, model_name: str, df: pd.DataFrame,
             "scaler": scaler,
             "feature_columns": feature_cols,
             "model_name": model_name,
-            "variant": VARIANT,
+            "variant": variant,
             "is_xgb": "XGB" in type(fitted).__name__,
         }
         tmp_path = ARTIFACTS_DIR / f"_tmp_{model_name}_{fold_id}.joblib"
@@ -113,7 +113,7 @@ def train_and_evaluate(model, model_name: str, df: pd.DataFrame,
 
         metrics = evaluate_predictions(y_pred=y_pred, y_true=y_true,
                                        fold_id=fold_id, model_name=model_name,
-                                       variant=VARIANT)
+                                       variant=variant)
         metrics["train_time_seconds"] = fold_result["train_time_seconds"]
         metrics["train_rows"] = fold_result["train_rows"]
 
@@ -154,15 +154,15 @@ def train_and_evaluate(model, model_name: str, df: pd.DataFrame,
     return {
         "experiment_id": exp_id,
         "model_name": model_name,
-        "variant": VARIANT,
+        "variant": variant,
         "fold_results": fold_results,
         "agg": agg,
-        "final_model_path": str(ARTIFACTS_DIR / f"{model_name}_{VARIANT}_final.joblib"),
+        "final_model_path": str(ARTIFACTS_DIR / f"{model_name}_{variant}_final.joblib"),
     }
 
 
 def threshold_sweep(exp_xgb: dict, df: pd.DataFrame, feature_cols: list,
-                    splitter: DatasetSplitter) -> dict:
+                    splitter: DatasetSplitter, min_signal_rate: float = 0.02) -> dict:
     """
     EXP_007: sweep thresholds on the best XGBoost model's fold models.
     Returns the optimal threshold and full sweep table.
@@ -176,7 +176,7 @@ def threshold_sweep(exp_xgb: dict, df: pd.DataFrame, feature_cols: list,
     for t in THRESHOLDS:
         fold_metrics = []
         for fold_id in FOLDS:
-            fold_path = ARTIFACTS_DIR / f"{model_name}_{VARIANT}_fold{fold_id}.joblib"
+            fold_path = ARTIFACTS_DIR / f"{model_name}_{exp_xgb.get('variant', VARIANT)}_fold{fold_id}.joblib"
             if not fold_path.exists():
                 logger.warning("Missing fold model: %s", fold_path)
                 continue
@@ -189,7 +189,7 @@ def threshold_sweep(exp_xgb: dict, df: pd.DataFrame, feature_cols: list,
             metrics = evaluate_predictions(y_pred=y_pred, y_true=y_true,
                                            fold_id=fold_id,
                                            model_name=model_name,
-                                           variant=VARIANT)
+                                           variant=exp_xgb.get("variant", VARIANT))
             fold_metrics.append(metrics)
 
         agg = aggregate_fold_results(fold_metrics)
@@ -199,7 +199,7 @@ def threshold_sweep(exp_xgb: dict, df: pd.DataFrame, feature_cols: list,
         cp_std  = cp.get("std",  0) or 0
         sr_mean = sr.get("mean", 0) or 0
         fold_std = cp.get("std", 0) or 0
-        viable = cp_mean > 0 and sr_mean >= 0.02
+        viable = cp_mean > 0 and sr_mean >= min_signal_rate
 
         sweep_rows.append({
             "threshold": t,
@@ -228,12 +228,13 @@ def threshold_sweep(exp_xgb: dict, df: pd.DataFrame, feature_cols: list,
             f"{'yes' if row['viable'] else 'no':>8}"
         )
 
-    # Select: maximise combined_precision subject to signal_rate >= 2%
+    # Select: maximise combined_precision subject to min_signal_rate constraint
     viable = [r for r in sweep_rows if r["viable"]]
     if viable:
         best = max(viable, key=lambda r: r["combined_precision"])
     else:
-        logger.warning("No threshold achieves signal_rate >= 2%. Selecting best available.")
+        logger.warning("No threshold achieves signal_rate >= %.1f%%. Selecting best available.",
+                       min_signal_rate * 100)
         best = max(sweep_rows, key=lambda r: r["combined_precision"])
 
     logger.info(
@@ -244,7 +245,7 @@ def threshold_sweep(exp_xgb: dict, df: pd.DataFrame, feature_cols: list,
     return {
         "experiment_id": "EXP_007",
         "model_name": model_name,
-        "variant": VARIANT,
+        "variant": exp_xgb.get("variant", VARIANT),
         "optimal_threshold": best["threshold"],
         "sweep_rows": sweep_rows,
         "fold_results": best["fold_metrics"],
@@ -292,6 +293,9 @@ def _make_xgb():
         from xgboost import XGBClassifier
     except ImportError:
         raise ImportError("xgboost not installed. Run: pip install xgboost")
+    # early_stopping_rounds removed: mlogloss plateau != precision plateau.
+    # The model achieves "good" mlogloss by predicting no-trade (65% class) early,
+    # then stops before learning directional signals. Full 500 rounds are needed.
     return XGBClassifier(
         n_estimators=500,
         max_depth=5,
@@ -303,7 +307,6 @@ def _make_xgb():
         objective="multi:softprob",
         num_class=3,
         eval_metric="mlogloss",
-        early_stopping_rounds=30,
         random_state=42,
         n_jobs=-1,
         verbosity=0,
@@ -318,12 +321,30 @@ def main():
         default="all",
         help="Which model to train",
     )
+    parser.add_argument(
+        "--variant",
+        choices=["L1", "L2", "L3", "L4", "L5"],
+        default="L1",
+        help="Label variant to train on (default: L1)",
+    )
+    parser.add_argument(
+        "--symbols",
+        default=None,
+        help="Comma-separated list of symbols to use (default: full WATCHLIST)",
+    )
     args = parser.parse_args()
+
+    active_variant = args.variant
+    active_symbols = (
+        [s.strip() for s in args.symbols.split(",")]
+        if args.symbols
+        else WATCHLIST
+    )
 
     wf_splitter = WalkForwardSplitter(FOLD_DEFINITIONS)
     ds_splitter = DatasetSplitter(wf_splitter)
 
-    df, feature_cols = load_dataset(ds_splitter)
+    df, feature_cols = load_dataset(ds_splitter, active_symbols, active_variant)
 
     # Compute class weights from fold 1 train set
     train_fold1, _ = ds_splitter.split(df, fold_id=1)
@@ -334,6 +355,10 @@ def main():
 
     run_all = args.model == "all"
 
+    # Dynamic experiment IDs based on variant / symbols
+    _is_default_config = (active_variant == "L1" and active_symbols == WATCHLIST)
+    _exp_prefix = "" if _is_default_config else f"[{active_variant},{len(active_symbols)}sym]"
+
     # EXP_004: Logistic Regression
     if run_all or args.model == "logistic":
         exp = train_and_evaluate(
@@ -343,6 +368,7 @@ def main():
             feature_cols=feature_cols,
             splitter=ds_splitter,
             exp_id="EXP_004",
+            variant=active_variant,
         )
         experiments.append(exp)
         _write_exp_log(exp, "EXP_004", "Logistic Regression")
@@ -356,6 +382,7 @@ def main():
             feature_cols=feature_cols,
             splitter=ds_splitter,
             exp_id="EXP_005",
+            variant=active_variant,
         )
         experiments.append(exp)
         _write_exp_log(exp, "EXP_005", "Random Forest")
@@ -369,6 +396,7 @@ def main():
             feature_cols=feature_cols,
             splitter=ds_splitter,
             exp_id="EXP_006",
+            variant=active_variant,
         )
         experiments.append(exp)
         exp_xgb = exp
@@ -380,10 +408,13 @@ def main():
             # Load previously trained XGBoost fold models
             exp_xgb = {
                 "model_name": "xgboost",
-                "variant": VARIANT,
-                "final_model_path": str(ARTIFACTS_DIR / f"xgboost_{VARIANT}_final.joblib"),
+                "variant": active_variant,
+                "final_model_path": str(ARTIFACTS_DIR / f"xgboost_{active_variant}_final.joblib"),
             }
-        exp_tuned = threshold_sweep(exp_xgb, df, feature_cols, ds_splitter)
+        # L5 has fewer signals by design — lower minimum acceptable signal rate
+        min_sr = 0.010 if active_variant == "L5" else 0.020
+        exp_tuned = threshold_sweep(exp_xgb, df, feature_cols, ds_splitter,
+                                    min_signal_rate=min_sr)
         experiments.append(exp_tuned)
         _write_exp_log(exp_tuned, "EXP_007", "XGBoost + Threshold Tuning")
 
@@ -397,17 +428,19 @@ def main():
         meta = {
             "experiment_id": best.get("experiment_id"),
             "model_name": best.get("model_name"),
-            "variant": best.get("variant", VARIANT),
+            "variant": best.get("variant", active_variant),
             "final_model_path": best.get("final_model_path"),
             "optimal_threshold": best.get("optimal_threshold", 0.5),
             "feature_columns": feature_cols,
+            "symbols": active_symbols,
         }
         meta_path = ARTIFACTS_DIR / "best_model_meta.json"
         with open(meta_path, "w") as f:
             json.dump(meta, f, indent=2)
         logger.info("Saved best model metadata to %s", meta_path)
 
-    print("\nPhase 6 training complete. Check EXPERIMENT_LOG.md for full results.")
+    print(f"\nTraining complete (variant={active_variant}, symbols={len(active_symbols)}). "
+          "Check EXPERIMENT_LOG.md for full results.")
     print("Next step: python scripts/run_ml_backtest.py")
 
 
@@ -440,7 +473,8 @@ def _write_exp_log(exp: dict, exp_id: str, title: str, include_importances: bool
         cp_val = (fr.get("combined_precision") or 0) * 100
         sr_val = fr.get("signal_rate", 0) * 100
         rows   = fr.get("train_rows", "?")
-        lines.append(f"| {fr.get('fold_id')} | {cp_val:.1f}% | {sr_val:.1f}% | {rows:,} |\n")
+        rows_str = f"{rows:,}" if isinstance(rows, int) else str(rows)
+        lines.append(f"| {fr.get('fold_id')} | {cp_val:.1f}% | {sr_val:.1f}% | {rows_str} |\n")
 
     lines += [
         "\n**Aggregate:**\n",

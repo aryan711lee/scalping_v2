@@ -1,7 +1,7 @@
 """
 Label variant definitions for three-class labeling.
 
-Four variants (L1–L4) each specify a target percentage, stop percentage,
+Five variants (L1–L5) each specify a target percentage, stop percentage,
 and forward horizon (candles). Phase 6 trains one model per variant.
 """
 
@@ -29,5 +29,11 @@ LABEL_VARIANTS: dict[str, dict] = {
         "stop_pct":    0.0025,
         "horizon":     25,
         "description": "Intermediate 2:1 RR — balanced between L1 and L2",
+    },
+    "L5": {
+        "target_pct":  0.0200,   # +2.00% long target / -2.00% short target
+        "stop_pct":    0.0100,   # -1.00% long stop   / +1.00% short stop
+        "horizon":     60,        # 60 × 3min = 180 minutes; 2% moves need 2-4h
+        "description": "Wide 2:1 RR — target=2.00%, stop=1.00%, horizon=60 candles",
     },
 }

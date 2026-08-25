@@ -89,6 +89,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build feature Parquet files.")
     parser.add_argument("--symbol", default=None, help="Single symbol, e.g. NSE:RELIANCE-EQ")
     parser.add_argument("--timeframe", default=None, help="Single timeframe: 1min / 3min / 5min")
+    parser.add_argument("--no-5min-context", action="store_true",
+                        help="Skip 5-min multi-timeframe context for 3-min features (EXP_011 mode)")
     args = parser.parse_args()
 
     symbols = [args.symbol] if args.symbol else WATCHLIST
@@ -102,24 +104,45 @@ def main() -> None:
     FEATURES_DIR.mkdir(parents=True, exist_ok=True)
 
     # Step 3 — build features per symbol × timeframe
+    # Build in order: 5min first, then 3min (needs 5min context), then 1min.
+    # If a single timeframe was requested, just use that order.
     logger.info("=== Step 2: Building features ===")
     summary: list[dict] = []
 
-    for tf in timeframes:
+    _TF_ORDER = ["5min", "3min", "1min"]
+    ordered_timeframes = [tf for tf in _TF_ORDER if tf in timeframes] + \
+                         [tf for tf in timeframes if tf not in _TF_ORDER]
+
+    # Cache 5-min feature DataFrames keyed by symbol for passing to 3-min builder
+    _5min_cache: dict[str, pd.DataFrame] = {}
+
+    for tf in ordered_timeframes:
         nifty_raw = load_nifty(tf)
         nifty_feat = compute_nifty_features(nifty_raw)
 
         for symbol in symbols:
             safe = _safe_symbol(symbol)
             out_path = FEATURES_DIR / f"{safe}_{tf}_features.parquet"
+
+            # For 3-min, pass the 5-min feature DataFrame if available (unless disabled)
+            df_5min = (
+                _5min_cache.get(symbol)
+                if tf == "3min" and not args.no_5min_context
+                else None
+            )
+
             try:
-                df = build_features(symbol, tf, nifty_feat)
+                df = build_features(symbol, tf, nifty_feat, df_5min=df_5min)
 
                 errors = _validate(df, symbol, tf)
                 if errors:
                     raise ValueError(f"Validation failed: {errors}")
 
                 df.to_parquet(out_path, index=False)
+
+                # Cache 5-min features for the 3-min pass
+                if tf == "5min":
+                    _5min_cache[symbol] = df
 
                 feature_cols = [c for c in df.columns if c not in _BASE_COLS]
                 date_range = f"{df['datetime'].min().date()} – {df['datetime'].max().date()}"

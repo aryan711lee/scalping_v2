@@ -138,6 +138,9 @@ class ModelTrainer:
         fitted_model = copy.deepcopy(self.model)
 
         if _requires_xgb_encoding(fitted_model):
+            # Disable early stopping — no eval_set for final model
+            if hasattr(fitted_model, "early_stopping_rounds"):
+                fitted_model.early_stopping_rounds = None
             y_enc = np.array([_ENCODE[int(lbl)] for lbl in y])
             sample_weight = np.array([self.class_weights[int(lbl)] for lbl in y])
             fitted_model.fit(X, y_enc, sample_weight=sample_weight)

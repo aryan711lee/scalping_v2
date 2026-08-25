@@ -74,7 +74,6 @@ def make_xgb():
         objective="multi:softprob",
         num_class=3,
         eval_metric="mlogloss",
-        early_stopping_rounds=10,
         random_state=42,
         n_jobs=-1,
         verbosity=0,

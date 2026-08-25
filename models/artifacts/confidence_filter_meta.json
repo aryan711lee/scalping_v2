@@ -1,0 +1,9 @@
+{
+  "top_pct": 0.2,
+  "window_candles": 50,
+  "min_confidence": 0.35,
+  "combined_precision": 0.27336596001580554,
+  "signal_rate": 0.0315772577262709,
+  "viable": true,
+  "variant": "L1"
+}
