@@ -3,185 +3,136 @@ LABEL VALIDATION REPORT
 
 Variant  Symbol                     TF       Long%  Short%   None%  Flagged
 ---------------------------------------------------------------------------
-L5       NSE:RELIANCE-EQ            1min      0.1%    0.1%   99.8%  YES ***
-L5       NSE:TCS-EQ                 1min      0.1%    0.1%   99.8%  YES ***
-L5       NSE:INFY-EQ                1min      0.1%    0.1%   99.7%  YES ***
-L5       NSE:HDFCBANK-EQ            1min      0.1%    0.1%   99.8%  YES ***
-L5       NSE:ICICIBANK-EQ           1min      0.1%    0.1%   99.8%  YES ***
-L5       NSE:SBIN-EQ                1min      0.4%    0.4%   99.2%  YES ***
-L5       NSE:WIPRO-EQ               1min      0.3%    0.2%   99.5%  YES ***
-L5       NSE:LT-EQ                  1min      0.2%    0.3%   99.6%  YES ***
-L5       NSE:KOTAKBANK-EQ           1min      0.1%    0.1%   99.8%  YES ***
-L5       NSE:AXISBANK-EQ            1min      0.2%    0.2%   99.6%  YES ***
-L5       NSE:BAJFINANCE-EQ          1min      0.4%    0.4%   99.3%  YES ***
-L5       NSE:MARUTI-EQ              1min      0.3%    0.3%   99.4%  YES ***
-L5       NSE:ASIANPAINT-EQ          1min      0.2%    0.2%   99.6%  YES ***
-L5       NSE:TITAN-EQ               1min      0.2%    0.2%   99.6%  YES ***
-L5       NSE:SUNPHARMA-EQ           1min      0.1%    0.2%   99.7%  YES ***
-L5       NSE:RELIANCE-EQ            3min      0.6%    0.5%   98.9%  YES ***
-L5       NSE:TCS-EQ                 3min      0.8%    0.4%   98.8%  YES ***
-L5       NSE:INFY-EQ                3min      0.8%    0.4%   98.7%  YES ***
-L5       NSE:HDFCBANK-EQ            3min      0.5%    0.2%   99.3%  YES ***
-L5       NSE:ICICIBANK-EQ           3min      0.5%    0.5%   99.0%  YES ***
-L5       NSE:SBIN-EQ                3min      1.3%    1.2%   97.5%  YES ***
-L5       NSE:WIPRO-EQ               3min      1.3%    0.8%   97.9%  YES ***
-L5       NSE:LT-EQ                  3min      1.0%    0.9%   98.1%  YES ***
-L5       NSE:KOTAKBANK-EQ           3min      0.8%    0.6%   98.6%  YES ***
-L5       NSE:AXISBANK-EQ            3min      1.0%    0.9%   98.2%  YES ***
-L5       NSE:BAJFINANCE-EQ          3min      1.6%    1.2%   97.2%  YES ***
-L5       NSE:MARUTI-EQ              3min      1.1%    0.8%   98.1%  YES ***
-L5       NSE:ASIANPAINT-EQ          3min      0.7%    0.6%   98.7%  YES ***
-L5       NSE:TITAN-EQ               3min      1.3%    0.8%   98.0%  YES ***
-L5       NSE:SUNPHARMA-EQ           3min      0.7%    0.5%   98.8%  YES ***
-L5       NSE:RELIANCE-EQ            5min      0.6%    0.6%   98.8%  YES ***
-L5       NSE:TCS-EQ                 5min      0.7%    0.6%   98.7%  YES ***
-L5       NSE:INFY-EQ                5min      0.8%    0.6%   98.6%  YES ***
-L5       NSE:HDFCBANK-EQ            5min      0.5%    0.4%   99.2%  YES ***
-L5       NSE:ICICIBANK-EQ           5min      0.5%    0.5%   99.0%  YES ***
-L5       NSE:SBIN-EQ                5min      1.0%    1.1%   97.9%  YES ***
-L5       NSE:WIPRO-EQ               5min      1.2%    0.9%   97.9%  YES ***
-L5       NSE:LT-EQ                  5min      1.0%    0.9%   98.1%  YES ***
-L5       NSE:KOTAKBANK-EQ           5min      0.7%    0.6%   98.7%  YES ***
-L5       NSE:AXISBANK-EQ            5min      1.0%    0.9%   98.1%  YES ***
-L5       NSE:BAJFINANCE-EQ          5min      1.4%    1.2%   97.4%  YES ***
-L5       NSE:MARUTI-EQ              5min      1.0%    0.9%   98.1%  YES ***
-L5       NSE:ASIANPAINT-EQ          5min      0.8%    0.6%   98.6%  YES ***
-L5       NSE:TITAN-EQ               5min      1.1%    0.9%   98.0%  YES ***
-L5       NSE:SUNPHARMA-EQ           5min      0.7%    0.6%   98.7%  YES ***
+L6       NSE:RELIANCE-EQ            1min      0.3%    0.3%   99.5%  YES ***
+L6       NSE:TCS-EQ                 1min      0.4%    0.2%   99.4%  YES ***
+L6       NSE:INFY-EQ                1min      0.4%    0.3%   99.3%  YES ***
+L6       NSE:HDFCBANK-EQ            1min      0.2%    0.2%   99.6%  YES ***
+L6       NSE:ICICIBANK-EQ           1min      0.2%    0.3%   99.5%  YES ***
+L6       NSE:SBIN-EQ                1min      0.7%    0.7%   98.7%  YES ***
+L6       NSE:WIPRO-EQ               1min      0.7%    0.4%   98.9%  YES ***
+L6       NSE:LT-EQ                  1min      0.4%    0.5%   99.1%  YES ***
+L6       NSE:KOTAKBANK-EQ           1min      0.3%    0.2%   99.5%  YES ***
+L6       NSE:AXISBANK-EQ            1min      0.5%    0.4%   99.1%  YES ***
+L6       NSE:BAJFINANCE-EQ          1min      0.8%    0.6%   98.6%  YES ***
+L6       NSE:MARUTI-EQ              1min      0.5%    0.5%   99.0%  YES ***
+L6       NSE:ASIANPAINT-EQ          1min      0.4%    0.3%   99.2%  YES ***
+L6       NSE:TITAN-EQ               1min      0.5%    0.5%   99.0%  YES ***
+L6       NSE:SUNPHARMA-EQ           1min      0.4%    0.4%   99.3%  YES ***
+L6       NSE:RELIANCE-EQ            3min      1.5%    1.2%   97.3%  YES ***
+L6       NSE:TCS-EQ                 3min      1.7%    1.2%   97.1%  YES ***
+L6       NSE:INFY-EQ                3min      1.9%    1.3%   96.8%  YES ***
+L6       NSE:HDFCBANK-EQ            3min      1.0%    0.9%   98.1%  YES ***
+L6       NSE:ICICIBANK-EQ           3min      1.3%    1.1%   97.6%  YES ***
+L6       NSE:SBIN-EQ                3min      2.8%    2.4%   94.8%  no
+L6       NSE:WIPRO-EQ               3min      2.6%    1.9%   95.5%  YES ***
+L6       NSE:LT-EQ                  3min      2.2%    1.9%   95.9%  YES ***
+L6       NSE:KOTAKBANK-EQ           3min      1.8%    1.3%   96.9%  YES ***
+L6       NSE:AXISBANK-EQ            3min      2.6%    2.0%   95.4%  YES ***
+L6       NSE:BAJFINANCE-EQ          3min      3.3%    2.8%   94.0%  no
+L6       NSE:MARUTI-EQ              3min      2.4%    1.8%   95.8%  YES ***
+L6       NSE:ASIANPAINT-EQ          3min      1.6%    1.5%   96.9%  YES ***
+L6       NSE:TITAN-EQ               3min      2.5%    1.9%   95.6%  YES ***
+L6       NSE:SUNPHARMA-EQ           3min      1.8%    1.3%   96.9%  YES ***
+L6       NSE:RELIANCE-EQ            5min      2.2%    1.8%   95.9%  YES ***
+L6       NSE:TCS-EQ                 5min      2.2%    2.1%   95.6%  no
+L6       NSE:INFY-EQ                5min      2.7%    2.1%   95.2%  no
+L6       NSE:HDFCBANK-EQ            5min      1.6%    1.4%   96.9%  YES ***
+L6       NSE:ICICIBANK-EQ           5min      2.1%    1.7%   96.2%  YES ***
+L6       NSE:SBIN-EQ                5min      3.5%    3.4%   93.0%  no
+L6       NSE:WIPRO-EQ               5min      3.4%    3.0%   93.7%  no
+L6       NSE:LT-EQ                  5min      3.1%    2.9%   94.0%  no
+L6       NSE:KOTAKBANK-EQ           5min      2.5%    2.1%   95.3%  no
+L6       NSE:AXISBANK-EQ            5min      3.5%    3.2%   93.3%  no
+L6       NSE:BAJFINANCE-EQ          5min      4.3%    4.0%   91.6%  no
+L6       NSE:MARUTI-EQ              5min      3.2%    2.7%   94.1%  no
+L6       NSE:ASIANPAINT-EQ          5min      2.5%    2.4%   95.1%  no
+L6       NSE:TITAN-EQ               5min      3.4%    2.8%   93.8%  no
+L6       NSE:SUNPHARMA-EQ           5min      2.8%    2.0%   95.2%  no
 
-FLAGGED (45 combinations):
-  L5 NSE:RELIANCE-EQ 1min
-    flag: long_pct=0.1% < 2.0%
-    flag: short_pct=0.1% < 2.0%
-  L5 NSE:TCS-EQ 1min
-    flag: long_pct=0.1% < 2.0%
-    flag: short_pct=0.1% < 2.0%
-  L5 NSE:INFY-EQ 1min
-    flag: long_pct=0.1% < 2.0%
-    flag: short_pct=0.1% < 2.0%
-  L5 NSE:HDFCBANK-EQ 1min
-    flag: long_pct=0.1% < 2.0%
-    flag: short_pct=0.1% < 2.0%
-  L5 NSE:ICICIBANK-EQ 1min
-    flag: long_pct=0.1% < 2.0%
-    flag: short_pct=0.1% < 2.0%
-  L5 NSE:SBIN-EQ 1min
-    flag: long_pct=0.4% < 2.0%
-    flag: short_pct=0.4% < 2.0%
-  L5 NSE:WIPRO-EQ 1min
-    flag: long_pct=0.3% < 2.0%
-    flag: short_pct=0.2% < 2.0%
-  L5 NSE:LT-EQ 1min
-    flag: long_pct=0.2% < 2.0%
-    flag: short_pct=0.3% < 2.0%
-  L5 NSE:KOTAKBANK-EQ 1min
-    flag: long_pct=0.1% < 2.0%
-    flag: short_pct=0.1% < 2.0%
-  L5 NSE:AXISBANK-EQ 1min
-    flag: long_pct=0.2% < 2.0%
-    flag: short_pct=0.2% < 2.0%
-  L5 NSE:BAJFINANCE-EQ 1min
-    flag: long_pct=0.4% < 2.0%
-    flag: short_pct=0.4% < 2.0%
-  L5 NSE:MARUTI-EQ 1min
+FLAGGED (31 combinations):
+  L6 NSE:RELIANCE-EQ 1min
     flag: long_pct=0.3% < 2.0%
     flag: short_pct=0.3% < 2.0%
-  L5 NSE:ASIANPAINT-EQ 1min
+  L6 NSE:TCS-EQ 1min
+    flag: long_pct=0.4% < 2.0%
+    flag: short_pct=0.2% < 2.0%
+  L6 NSE:INFY-EQ 1min
+    flag: long_pct=0.4% < 2.0%
+    flag: short_pct=0.3% < 2.0%
+  L6 NSE:HDFCBANK-EQ 1min
     flag: long_pct=0.2% < 2.0%
     flag: short_pct=0.2% < 2.0%
-  L5 NSE:TITAN-EQ 1min
+  L6 NSE:ICICIBANK-EQ 1min
     flag: long_pct=0.2% < 2.0%
-    flag: short_pct=0.2% < 2.0%
-  L5 NSE:SUNPHARMA-EQ 1min
-    flag: long_pct=0.1% < 2.0%
-    flag: short_pct=0.2% < 2.0%
-  L5 NSE:RELIANCE-EQ 3min
-    flag: long_pct=0.6% < 2.0%
-    flag: short_pct=0.5% < 2.0%
-  L5 NSE:TCS-EQ 3min
-    flag: long_pct=0.8% < 2.0%
+    flag: short_pct=0.3% < 2.0%
+  L6 NSE:SBIN-EQ 1min
+    flag: long_pct=0.7% < 2.0%
+    flag: short_pct=0.7% < 2.0%
+  L6 NSE:WIPRO-EQ 1min
+    flag: long_pct=0.7% < 2.0%
     flag: short_pct=0.4% < 2.0%
-  L5 NSE:INFY-EQ 3min
-    flag: long_pct=0.8% < 2.0%
-    flag: short_pct=0.4% < 2.0%
-  L5 NSE:HDFCBANK-EQ 3min
-    flag: long_pct=0.5% < 2.0%
+  L6 NSE:LT-EQ 1min
+    flag: long_pct=0.4% < 2.0%
+    flag: short_pct=0.5% < 2.0%
+  L6 NSE:KOTAKBANK-EQ 1min
+    flag: long_pct=0.3% < 2.0%
     flag: short_pct=0.2% < 2.0%
-  L5 NSE:ICICIBANK-EQ 3min
+  L6 NSE:AXISBANK-EQ 1min
+    flag: long_pct=0.5% < 2.0%
+    flag: short_pct=0.4% < 2.0%
+  L6 NSE:BAJFINANCE-EQ 1min
+    flag: long_pct=0.8% < 2.0%
+    flag: short_pct=0.6% < 2.0%
+  L6 NSE:MARUTI-EQ 1min
     flag: long_pct=0.5% < 2.0%
     flag: short_pct=0.5% < 2.0%
-  L5 NSE:SBIN-EQ 3min
-    flag: long_pct=1.3% < 2.0%
+  L6 NSE:ASIANPAINT-EQ 1min
+    flag: long_pct=0.4% < 2.0%
+    flag: short_pct=0.3% < 2.0%
+  L6 NSE:TITAN-EQ 1min
+    flag: long_pct=0.5% < 2.0%
+    flag: short_pct=0.5% < 2.0%
+  L6 NSE:SUNPHARMA-EQ 1min
+    flag: long_pct=0.4% < 2.0%
+    flag: short_pct=0.4% < 2.0%
+  L6 NSE:RELIANCE-EQ 3min
+    flag: long_pct=1.5% < 2.0%
     flag: short_pct=1.2% < 2.0%
-  L5 NSE:WIPRO-EQ 3min
-    flag: long_pct=1.3% < 2.0%
-    flag: short_pct=0.8% < 2.0%
-  L5 NSE:LT-EQ 3min
+  L6 NSE:TCS-EQ 3min
+    flag: long_pct=1.7% < 2.0%
+    flag: short_pct=1.2% < 2.0%
+  L6 NSE:INFY-EQ 3min
+    flag: long_pct=1.9% < 2.0%
+    flag: short_pct=1.3% < 2.0%
+  L6 NSE:HDFCBANK-EQ 3min
     flag: long_pct=1.0% < 2.0%
     flag: short_pct=0.9% < 2.0%
-  L5 NSE:KOTAKBANK-EQ 3min
-    flag: long_pct=0.8% < 2.0%
-    flag: short_pct=0.6% < 2.0%
-  L5 NSE:AXISBANK-EQ 3min
-    flag: long_pct=1.0% < 2.0%
-    flag: short_pct=0.9% < 2.0%
-  L5 NSE:BAJFINANCE-EQ 3min
-    flag: long_pct=1.6% < 2.0%
-    flag: short_pct=1.2% < 2.0%
-  L5 NSE:MARUTI-EQ 3min
-    flag: long_pct=1.1% < 2.0%
-    flag: short_pct=0.8% < 2.0%
-  L5 NSE:ASIANPAINT-EQ 3min
-    flag: long_pct=0.7% < 2.0%
-    flag: short_pct=0.6% < 2.0%
-  L5 NSE:TITAN-EQ 3min
+  L6 NSE:ICICIBANK-EQ 3min
     flag: long_pct=1.3% < 2.0%
-    flag: short_pct=0.8% < 2.0%
-  L5 NSE:SUNPHARMA-EQ 3min
-    flag: long_pct=0.7% < 2.0%
-    flag: short_pct=0.5% < 2.0%
-  L5 NSE:RELIANCE-EQ 5min
-    flag: long_pct=0.6% < 2.0%
-    flag: short_pct=0.6% < 2.0%
-  L5 NSE:TCS-EQ 5min
-    flag: long_pct=0.7% < 2.0%
-    flag: short_pct=0.6% < 2.0%
-  L5 NSE:INFY-EQ 5min
-    flag: long_pct=0.8% < 2.0%
-    flag: short_pct=0.6% < 2.0%
-  L5 NSE:HDFCBANK-EQ 5min
-    flag: long_pct=0.5% < 2.0%
-    flag: short_pct=0.4% < 2.0%
-  L5 NSE:ICICIBANK-EQ 5min
-    flag: long_pct=0.5% < 2.0%
-    flag: short_pct=0.5% < 2.0%
-  L5 NSE:SBIN-EQ 5min
-    flag: long_pct=1.0% < 2.0%
     flag: short_pct=1.1% < 2.0%
-  L5 NSE:WIPRO-EQ 5min
-    flag: long_pct=1.2% < 2.0%
-    flag: short_pct=0.9% < 2.0%
-  L5 NSE:LT-EQ 5min
-    flag: long_pct=1.0% < 2.0%
-    flag: short_pct=0.9% < 2.0%
-  L5 NSE:KOTAKBANK-EQ 5min
-    flag: long_pct=0.7% < 2.0%
-    flag: short_pct=0.6% < 2.0%
-  L5 NSE:AXISBANK-EQ 5min
-    flag: long_pct=1.0% < 2.0%
-    flag: short_pct=0.9% < 2.0%
-  L5 NSE:BAJFINANCE-EQ 5min
-    flag: long_pct=1.4% < 2.0%
-    flag: short_pct=1.2% < 2.0%
-  L5 NSE:MARUTI-EQ 5min
-    flag: long_pct=1.0% < 2.0%
-    flag: short_pct=0.9% < 2.0%
-  L5 NSE:ASIANPAINT-EQ 5min
-    flag: long_pct=0.8% < 2.0%
-    flag: short_pct=0.6% < 2.0%
-  L5 NSE:TITAN-EQ 5min
-    flag: long_pct=1.1% < 2.0%
-    flag: short_pct=0.9% < 2.0%
-  L5 NSE:SUNPHARMA-EQ 5min
-    flag: long_pct=0.7% < 2.0%
-    flag: short_pct=0.6% < 2.0%
+  L6 NSE:WIPRO-EQ 3min
+    flag: short_pct=1.9% < 2.0%
+  L6 NSE:LT-EQ 3min
+    flag: short_pct=1.9% < 2.0%
+  L6 NSE:KOTAKBANK-EQ 3min
+    flag: long_pct=1.8% < 2.0%
+    flag: short_pct=1.3% < 2.0%
+  L6 NSE:AXISBANK-EQ 3min
+    flag: short_pct=2.0% < 2.0%
+  L6 NSE:MARUTI-EQ 3min
+    flag: short_pct=1.8% < 2.0%
+  L6 NSE:ASIANPAINT-EQ 3min
+    flag: long_pct=1.6% < 2.0%
+    flag: short_pct=1.5% < 2.0%
+  L6 NSE:TITAN-EQ 3min
+    flag: short_pct=1.9% < 2.0%
+  L6 NSE:SUNPHARMA-EQ 3min
+    flag: long_pct=1.8% < 2.0%
+    flag: short_pct=1.3% < 2.0%
+  L6 NSE:RELIANCE-EQ 5min
+    flag: short_pct=1.8% < 2.0%
+  L6 NSE:HDFCBANK-EQ 5min
+    flag: long_pct=1.6% < 2.0%
+    flag: short_pct=1.4% < 2.0%
+  L6 NSE:ICICIBANK-EQ 5min
+    flag: short_pct=1.7% < 2.0%

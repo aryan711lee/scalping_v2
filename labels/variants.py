@@ -36,4 +36,10 @@ LABEL_VARIANTS: dict[str, dict] = {
         "horizon":     60,        # 60 × 3min = 180 minutes; 2% moves need 2-4h
         "description": "Wide 2:1 RR — target=2.00%, stop=1.00%, horizon=60 candles",
     },
+    "L6": {
+        "target_pct":  0.0140,   # +1.40% long target / -1.40% short target
+        "stop_pct":    0.0070,   # -0.70% long stop   / +0.70% short stop
+        "horizon":     40,        # 40 × 3min = 120 minutes; sweet spot between L1 and L5
+        "description": "Sweet-spot 2:1 RR — target=1.40%, stop=0.70%, horizon=40",
+    },
 }

@@ -4,7 +4,7 @@
 Phase 7: Paper Trading — **Not Started**
 
 ## Status
-Phase 6.5 and EXP_015 complete. EXP_015 (L5 2%/1% labels) confirmed Scenario D: label density too low for ML training on 3-min candles. 263 tests passing (0 failures). Phase 7 proceeds with EXP_014 configuration (L1 XGBoost + confidence filter). See EXP_015 decision below.
+Phases 1–6.5 and EXP_015/EXP_016 complete. EXP_016 (L6 1.4%/0.7% labels) confirmed Scenario C: L6 is not a learnable pattern on 3-min NSE data (best fold precision 6.3% vs 40.8% break-even). Phase 7 proceeds with EXP_015 configuration: L1 XGBoost model + L5 exits (2.00%/1.00%). See findings below.
 
 ## Architecture
 - Broker: Fyers (primary)
@@ -72,7 +72,20 @@ Phase 6.5 and EXP_015 complete. EXP_015 (L5 2%/1% labels) confirmed Scenario D: 
 - [x] labels/variants.py — L5 variant added (target=2.00%, stop=1.00%, horizon=60)
 - [x] 45 L5 label files built (15 symbols × 3 timeframes) — all flagged for low density
 - [x] L5 distribution documented: 3min avg long~1.0%, short~0.7% — below 3% threshold
-- [x] Decision: Scenario D confirmed, no retraining, Phase 7 uses EXP_014 configuration
+- [x] Scenario D: label density too low for ML training; backtest run with L1 model + L5 exits
+- [x] EXP_015 backtest: 38.1% WR vs 38.5% break-even — near break-even, major improvement on EXP_014
+- [x] EXP_015 Finding: L1 model signals DO identify 2% moves when held for 60 candles (180 min)
+- [x] Phase 7 primary config revised: L1 model + L5 exits (2.00%/1.00%)
+
+### EXP_016 — L6 Labels (Sweet-Spot Hypothesis Test)
+- [x] labels/variants.py — L6 variant added (target=1.40%, stop=0.70%, horizon=40)
+- [x] 45 L6 label files built (15 symbols × 3 timeframes)
+- [x] L6 distribution documented: 3min avg long~2.1% — CAUTION zone (gate: ≥4% ideal)
+- [x] XGBoost trained on L6: combined_precision=4.6%±1.5%, signal_rate=13.8%
+- [x] Threshold sweep: best precision 6.3% at t=0.70 — 34pp below 40.8% break-even
+- [x] Scenario C confirmed: L6 is not a learnable pattern on 3min NSE data
+- [x] No backtest run (sweep conclusively ruled out viability)
+- [x] Phase 7 config unchanged: L1 model + L5 exits (EXP_015 result)
 
 ### Phase 4 — Label Engineering & Research Environment
 - [x] labels/variants.py — L1, L2, L3, L4 variant definitions
@@ -185,16 +198,34 @@ Backtest run using EXP_014 L1 model with L5 exit params (2%/1%) to quantify the 
 
 **Revised Phase 7 decision:** Test L5 exit parameters (2%/1%) in paper trading with the L1 model, NOT L1 exits. The L5 exits nearly break even on the 2026 holdout; L1 exits lose at 1712% costs/gross. See EXPERIMENT_LOG.md for full analysis.
 
+## EXP_016 Finding (2026-08-28)
+
+**L6 (1.40%/0.70%, horizon=40)** failed the learnability test:
+- Label density: avg 2.1% long (CAUTION zone) — 13/15 symbols individually below 2%
+- Fold validation precision: 4.6% ± 1.5% (vs 40.8% break-even) — Scenario C
+- Threshold sweep peak: 6.3% at t=0.70 — 34.5pp below break-even
+- Conclusion: L6 does not represent a learnable pattern on 3min NSE data
+
+**Root cause:** Large-cap NSE stocks on 3-minute bars do not produce enough 1.4% directional moves (horizon=40 candles) to provide reliable ML training signal. The density floor is approximately 17% (L1). Both L5 and L6 fall in the noise zone.
+
+**Phase 7 configuration (unchanged from EXP_015):**
+- **Primary:** L1 XGBoost + confidence filter + L5 exits (target=2.00%, stop=1.00%)
+- **Reference:** EXP_014 L1 exits (target=0.40%, stop=0.20%)
+
+**Future options (not started):**
+- Option A: NIFTY Midcap 50 universe with L6 labels (higher vol, denser large moves)
+- Option B: Daily candles with swing-trading labels (2–5 day holds)
+
 ## Next Task
 Phase 7: Paper Trading
 
-Phase 7 goal: run both configurations live on Fyers paper account and validate:
+Phase 7 goal: run the EXP_015 configuration live on Fyers paper account and validate:
 1. Execution fills match backtester T+1 open assumption
 2. Real slippage vs assumed (0.05% per side)
 3. Whether the 38.1% L5 win rate holds on live data (key question from EXP_015)
 
-**Primary config (EXP_015 finding):** XGBoost L1 + confidence filter + L5 exits (target=2.00%, stop=1.00%)
-**Reference config (EXP_014):** XGBoost L1 + confidence filter + L1 exits (target=0.40%, stop=0.20%)
+**Primary config:** XGBoost L1 + confidence filter + L5 exits (target=2.00%, stop=1.00%)
+**Reference config:** EXP_014 — XGBoost L1 + confidence filter + L1 exits (target=0.40%, stop=0.20%)
 
 Final model artifact: `models/artifacts/xgboost_L1_final.joblib`
 Confidence filter config: `models/artifacts/confidence_filter_meta.json`

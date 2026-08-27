@@ -52,6 +52,7 @@ THRESHOLDS = [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70]
 def load_dataset(splitter: DatasetSplitter, symbols: list, variant: str):
     logger.info("Loading full dataset (%d symbols, 3min, %s)...", len(symbols), variant)
     df = build_full_dataset(symbols, TIMEFRAME, variant)
+    df = df.copy()  # consolidate pandas blocks once upfront to prevent OOM on fold copies
     logger.info("  Total rows: %d", len(df))
     feature_cols = splitter.get_feature_columns(df)
     logger.info("  Feature columns: %d", len(feature_cols))
@@ -323,7 +324,7 @@ def main():
     )
     parser.add_argument(
         "--variant",
-        choices=["L1", "L2", "L3", "L4", "L5"],
+        choices=["L1", "L2", "L3", "L4", "L5", "L6"],
         default="L1",
         help="Label variant to train on (default: L1)",
     )
@@ -411,8 +412,8 @@ def main():
                 "variant": active_variant,
                 "final_model_path": str(ARTIFACTS_DIR / f"xgboost_{active_variant}_final.joblib"),
             }
-        # L5 has fewer signals by design — lower minimum acceptable signal rate
-        min_sr = 0.010 if active_variant == "L5" else 0.020
+        # L5/L6 have fewer signals by design — lower minimum acceptable signal rate
+        min_sr = 0.010 if active_variant == "L5" else (0.015 if active_variant == "L6" else 0.020)
         exp_tuned = threshold_sweep(exp_xgb, df, feature_cols, ds_splitter,
                                     min_signal_rate=min_sr)
         experiments.append(exp_tuned)

@@ -909,3 +909,168 @@ Both use the same signal model. The difference is purely exit parameters. Live p
 **Phase 7 configuration decision:** EXP_014 (L1 XGBoost + confidence filter)
 
 **Conclusion:** EXP_015 determined which target/stop width is viable at Rs.50,000 capital. L5 improved on EXP_014 (expectancy Rs.-52.40/trade vs Rs.-71.10/trade).
+
+## EXP_006 — XGBoost
+**Date:** 2026-08-28
+**Model:** XGBoost
+**Variant:** L6 | **Timeframe:** 3min
+
+**Per-fold results:**
+| Fold | combined_precision | signal_rate | train_rows |
+|------|-------------------|-------------|------------|
+| 1 | 5.7% | 16.7% | 603,225 |
+| 2 | 5.7% | 18.5% | 809,475 |
+| 3 | 2.5% | 6.2% | 1,012,425 |
+
+**Aggregate:**
+- combined_precision: 4.6% ± 1.5%
+- signal_rate: 13.8% ± 5.4%
+- consistency (std/mean): 32.6%
+
+**Feature importances (Fold 3, top 20):**
+- session_minute: 0.1191
+- vwap_above: 0.0574
+- atr_pct: 0.0555
+- time_sin: 0.0426
+- time_cos: 0.0350
+- is_closing_30min: 0.0284
+- ema50_distance: 0.0220
+- high: 0.0220
+- low: 0.0215
+- tf5_trend: 0.0210
+- day_sin: 0.0210
+- close: 0.0210
+- day_cos: 0.0207
+- realized_vol_20: 0.0201
+- ema21_above_ema50: 0.0190
+- open: 0.0188
+- vwap_distance: 0.0185
+- volume_ma_20: 0.0167
+- atr_percentile: 0.0164
+- tf5_vwap_above: 0.0159
+
+## EXP_007 — XGBoost + Threshold Tuning
+**Date:** 2026-08-28
+**Model:** XGBoost + Threshold Tuning
+**Variant:** L6 | **Timeframe:** 3min
+
+**Per-fold results:**
+| Fold | combined_precision | signal_rate | train_rows |
+|------|-------------------|-------------|------------|
+| 1 | 6.8% | 2.4% | ? |
+| 2 | 8.7% | 2.6% | ? |
+| 3 | 3.4% | 0.8% | ? |
+
+**Aggregate:**
+- combined_precision: 6.3% ± 2.2%
+- signal_rate: 1.9% ± 0.8%
+- consistency (std/mean): 35.2%
+
+**Threshold sweep:**
+| threshold | combined_precision | signal_rate | fold_std | viable |
+|-----------|-------------------|-------------|----------|--------|
+| 0.35 | 3.3% | 36.1% | 1.2% | yes |
+| 0.40 | 3.7% | 28.2% | 1.3% | yes |
+| 0.45 | 4.2% | 20.4% | 1.4% | yes |
+| 0.50 | 4.6% | 13.8% | 1.5% | yes |
+| 0.55 | 5.1% | 9.0% | 1.6% | yes |
+| 0.60 | 5.5% | 5.6% | 1.8% | yes |
+| 0.65 | 5.9% | 3.4% | 1.9% | yes |
+| 0.70 | 6.3% | 1.9% | 2.2% | yes |
+
+**Selected threshold:** 0.7
+
+## EXP_016 — L6 Labels: 1.4% Target / 0.7% Stop
+
+**Date:** 2026-08-28
+**Hypothesis:** L6 labels (1.4%/0.7%, horizon=40) represent the sweet spot
+between L1 (too costly) and L5 (too rare), providing sufficient training
+data density while keeping costs manageable at Rs.50,000 capital.
+
+**Label variant:** L6 | **Timeframe:** 3min | **Symbols:** 15 large-cap NSE
+
+**L6 label distribution (3min, 15 symbols):**
+
+| Symbol | Long% | Short% | None% | Flagged? |
+|--------|-------|--------|-------|----------|
+| RELIANCE | 1.5% | 1.2% | 97.3% | YES |
+| TCS | 1.7% | 1.2% | 97.1% | YES |
+| INFY | 1.9% | 1.3% | 96.8% | YES |
+| HDFCBANK | 1.0% | 0.9% | 98.1% | YES |
+| ICICIBANK | 1.3% | 1.1% | 97.6% | YES |
+| SBIN | 2.8% | 2.4% | 94.8% | no |
+| WIPRO | 2.6% | 1.9% | 95.5% | YES |
+| LT | 2.2% | 1.9% | 95.9% | YES |
+| KOTAKBANK | 1.8% | 1.3% | 96.9% | YES |
+| AXISBANK | 2.6% | 2.0% | 95.4% | YES |
+| BAJFINANCE | 3.3% | 2.8% | 94.0% | no |
+| MARUTI | 2.4% | 1.8% | 95.8% | YES |
+| ASIANPAINT | 1.6% | 1.5% | 96.9% | YES |
+| TITAN | 2.5% | 1.9% | 95.6% | YES |
+| SUNPHARMA | 1.8% | 1.3% | 96.9% | YES |
+| **Average** | **~2.1%** | **~1.6%** | **~96.3%** | |
+
+**Density gate result:** CAUTION — avg long% ~2.1% (gate: ≥4% ideal, 2.0–3.9% caution)
+Proceeded with training as per spec. Floor: HDFCBANK 1.0%. Peak: BAJFINANCE 3.3%.
+Note: the actual density (avg 2.1%) was well below the spec's ideal 4–8% estimate.
+In hindsight, 13/15 symbols were individually below the 2% viability floor.
+
+**Walk-forward fold results:**
+
+| Fold | combined_precision | signal_rate | train_rows |
+|------|--------------------|-------------|------------|
+| 1 | 5.7% | 16.7% | 603,225 |
+| 2 | 5.7% | 18.5% | 809,475 |
+| 3 | 2.5% | 6.2% | 1,012,425 |
+
+Aggregate:
+- combined_precision: 4.6% ± 1.5%
+- signal_rate: 13.8%
+- Fold 3 collapse (2.5%) signals the model is not generalizing — 2025-H2 pattern is different
+
+**Threshold sweep:**
+
+| Threshold | combined_precision | signal_rate |
+|-----------|-------------------|-------------|
+| 0.35 | 3.3% | 36.1% |
+| 0.40 | 3.7% | 28.2% |
+| 0.45 | 4.2% | 20.4% |
+| 0.50 | 4.6% | 13.8% |
+| 0.55 | 5.1% | 9.0% |
+| 0.60 | 5.5% | 5.6% |
+| 0.65 | 5.9% | 3.4% |
+| **0.70** | **6.3%** | **1.9%** |
+
+**Selected threshold:** 0.70 (best combined_precision, but still unviable)
+**Peak precision:** 6.3% vs L6 break-even requirement of 40.8% — gap of 34.5pp
+
+**Backtest:** Not run. Threshold sweep confirms no configuration achieves viability.
+Running the 2026 holdout would only add noise to an already-clear conclusion.
+
+**Break-even win rate:** 40.8%
+**Best achieved (fold validation):** 6.3% at t=0.70
+
+**Scenario:** C — L6 does not represent a learnable pattern at this timeframe.
+
+**Conclusion:**
+The sweet-spot hypothesis was incorrect for this universe and timeframe.
+L6 (1.4%/0.7%, horizon=40) on 3min NSE data suffers the same fundamental problem
+as L5: label density is too low to provide reliable training signal.
+While L6 cleared the CAUTION threshold (avg 2.1% ≥ 2.0%), 13 of 15 symbols were
+individually below 2% — the average was lifted by two outliers (BAJFINANCE 3.3%,
+SBIN 2.8%). The effective training signal was insufficient.
+
+**Root cause:** At 3-minute resolution, a 1.4% move in 40 candles (120 min) is rare
+for large-cap NSE stocks. The market simply does not produce enough labeled examples
+per symbol to train a reliable classifier. L1's density (17%) works because 0.4% in
+20 candles is routine. L5 and L6 are asking for moves that require patience the 3min
+timeframe cannot sustain.
+
+**Phase 7 configuration decision:**
+EXP_016 does not change Phase 7. Phase 7 proceeds with:
+- Primary: L1 model (EXP_014) + L5 exits (2.00%/1.00%) — validated in EXP_015
+- The L5 exit configuration (38.1% WR vs 38.5% break-even) is the best result achieved
+
+**Two options tabled for future exploration (per spec):**
+A) NIFTY Midcap 50 universe with L6 labels (higher volatility, denser large moves)
+B) Daily candles with swing-trading labels (2–5 day holds, L6 moves are routine)

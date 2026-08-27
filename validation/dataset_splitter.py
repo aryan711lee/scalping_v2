@@ -37,8 +37,8 @@ class DatasetSplitter:
         val_start   = pd.Timestamp(fold["validate_start"]).tz_localize("Asia/Kolkata")
         val_end     = pd.Timestamp(fold["validate_end"]).tz_localize("Asia/Kolkata") + pd.Timedelta(days=1) - pd.Timedelta(seconds=1)
 
-        train_df = df.loc[(df.index >= train_start) & (df.index <= train_end)].copy()
-        val_df   = df.loc[(df.index >= val_start)   & (df.index <= val_end)].copy()
+        train_df = df.loc[(df.index >= train_start) & (df.index <= train_end)]
+        val_df   = df.loc[(df.index >= val_start)   & (df.index <= val_end)]
 
         logger.debug(
             f"Fold {fold_id}: train={len(train_df)} rows, val={len(val_df)} rows"

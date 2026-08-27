@@ -1,9 +1,9 @@
 {
-  "experiment_id": "EXP_006",
+  "experiment_id": "EXP_007",
   "model_name": "xgboost",
-  "variant": "L1",
-  "final_model_path": "D:\\scalp\\scalping_v2\\models\\artifacts\\xgboost_L1_final.joblib",
-  "optimal_threshold": 0.5,
+  "variant": "L6",
+  "final_model_path": "D:\\scalp\\scalping_v2\\models\\artifacts\\xgboost_L6_final.joblib",
+  "optimal_threshold": 0.7,
   "feature_columns": [
     "open",
     "high",
